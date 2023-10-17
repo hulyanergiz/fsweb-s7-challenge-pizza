@@ -16,7 +16,6 @@ const SiparisFormu = (props) => {
   const increase = () => {
     setCount(count + 1);
   };
-  console.log(count);
 
   const initialForm = {
     size: { Küçük: false, Orta: false, Büyük: false },
