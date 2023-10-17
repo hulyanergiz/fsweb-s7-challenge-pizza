@@ -1,10 +1,16 @@
 import React from "react";
+//import { useState } from "react";
+import Header from "./layouts/Header";
+import Main from "./layouts/Main";
+import Footer from "./layouts/Footer";
+import "./App.css";
 
 const App = () => {
   return (
     <>
-      <h1>Teknolojik Yemekler</h1>
-      <p>Burdaki kodu silip kendi headerınızı ekleyebilirsiniz</p>
+      <Header />
+      <Main />
+      <Footer />
     </>
   );
 };
