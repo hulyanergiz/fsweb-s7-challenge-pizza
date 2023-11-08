@@ -18,8 +18,8 @@ const SiparisAlindi = () => {
         <p>Hamur: {orderData.thickness}</p>
         <p>
           Ek Malzemeler:{" "}
-          {Object.keys(orderData.extraIngredients)
-            .filter((ingredient) => orderData.extraIngredients[ingredient])
+          {orderData.extraIngredients
+            .filter((ingredient) => ingredient)
             .join(", ")}
         </p>{" "}
       </div>
@@ -28,8 +28,8 @@ const SiparisAlindi = () => {
         <h4>Sipariş Toplamı</h4>
         <p>
           Seçimler:{" "}
-          {Object.values(orderData.extraIngredients).filter(Boolean).length * 5}
-          ₺
+          {/* {Object.values(orderData.extraIngredients).filter(Boolean).length * 5} */}
+          {orderData.secimler}₺
         </p>
         <p>Toplam: {orderData.totalPrice}₺</p>
       </div>

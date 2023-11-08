@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-//import axios from "axios";
+import axios from "axios";
 import * as yup from "yup";
 import "./SiparisFormu.css";
 import { Button } from "reactstrap";
@@ -9,58 +9,51 @@ import { useHistory } from "react-router-dom";
 const SiparisFormu = (props) => {
   let { price } = props;
 
-  const [count, setCount] = useState(1);
-  const decrease = () => {
-    setCount(count - 1);
-  };
-  const increase = () => {
-    setCount(count + 1);
-  };
+  const pizza = [
+    {
+      size: ["Küçük", "Orta", "Büyük"],
+      thickness: ["Hamur Kalınlığı", "İnce", "Normal", "Kalın"],
+      extraIngredients: [
+        "Pepperoni",
+        "Domates",
+        "Biber",
+        "Sosis",
+        "Misir",
+        "Sucuk",
+        "Kanada Jambonu",
+        "Kekik",
+        "Ananas",
+        "Tavuk Izgara",
+        "Jalepano",
+        "Kabak",
+        "Sogan",
+        "Sarimsak",
+      ],
+      extraIngredientsPrice: 5,
+    },
+  ];
 
   const initialForm = {
-    size: { Küçük: false, Orta: false, Büyük: false },
-    thickness: {
-      "Hamur Kalınlığı": false,
-      İnce: false,
-      Normal: false,
-      Kalın: false,
-    },
-    extraIngredients: {
-      Pepperoni: false,
-      Domates: false,
-      Biber: false,
-      Sosis: false,
-      Mısır: false,
-      Sucuk: false,
-      "Kanada Jambonu": false,
-      Mantar: false,
-      Ananas: false,
-      "Tavuk Izgara": false,
-      Jalepeno: false,
-      Kabak: false,
-      Soğan: false,
-      Sarımsak: false,
-    },
+    size: [],
+    thickness: [],
+    extraIngredients: [],
     note: "",
-    quantity: count,
+    count: 1,
+    ingredTotalCost: 0,
+    totalPrice: 0,
   };
 
-  /* const initialError = {
+  const initialError = {
     size: "",
     thickness: "",
-  }; */
+    extraIngredients: "",
+  };
 
   const [formData, setFormData] = useState(initialForm);
-  //const [errors, setErrors] = useState(initialError);
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [errors, setErrors] = useState(initialError);
+  const [isValid, setIsValid] = useState(false);
   const history = useHistory();
-
-  let numberOfIngredients = 0;
-  for (let key in formData.extraIngredients) {
-    if (formData.extraIngredients[key] === true) {
-      numberOfIngredients++;
-    }
-  }
+  const [ingredTotalCost, setIngredTotalCost] = useState(0);
 
   const newPrice = (price) => {
     if (
@@ -77,62 +70,38 @@ const SiparisFormu = (props) => {
       return (price += 20);
     }
   };
-
   const formSchema = yup.object().shape({
-    size: yup
-      .object()
-      .shape({
-        Küçük: yup.boolean(),
-        Orta: yup.boolean(),
-        Büyük: yup.boolean(),
-      })
-      .test(
-        "Sadece birini seçiniz.",
-        (value) => (Object.values(value).filter(Boolean).length = 1)
-      ),
-
+    size: yup.string().oneOf(pizza[0].size, "Bir boyut seçmelisiniz."),
     thickness: yup
-      .object()
-      .shape({
-        "Hamur Kalınlığı": yup.boolean(),
-        İnce: yup.boolean(),
-        Normal: yup.boolean(),
-        Kalın: yup.boolean(),
-      })
-      .test(
-        "Sadece birini seçebilirsiniz.",
-        (value) => (Object.values(value).filter(Boolean).length = 1)
-      ),
+      .string()
+      .notOneOf([pizza[0].thickness[0]], "Bir hamur kalınlığı seçmelisiniz"),
     extraIngredients: yup
-      .object()
-      .shape({
-        Pepperoni: yup.boolean(),
-        Domates: yup.boolean(),
-        Biber: yup.boolean(),
-        Sosis: yup.boolean(),
-        Mısır: yup.boolean(),
-        Sucuk: yup.boolean(),
-        "Kanada Jambonu": yup.boolean(),
-        Mantar: yup.boolean(),
-        "Tavuk Izgara": yup.boolean(),
-        Jalepeno: yup.boolean(),
-        Kabak: yup.boolean(),
-        Soğan: yup.boolean(),
-        Sarımsak: yup.boolean(),
-      })
-      /* .test("En fazla 10 malzeme seçebilirsiniz.", numberOfIngredients <= 10), */
-      .test(
-        "En fazla 10 malzeme seçebilirsiniz.",
-        (value) => Object.values(value).filter(Boolean).length <= 10
-      ),
+      .array()
+      .max(10, "En fazla 10 ek malzeme seçebilirsiniz."),
   });
 
   useEffect(() => {
-    formSchema.isValid(formData).then((valid) => setIsDisabled(valid));
+    formSchema.isValid(formData).then((valid) => setIsValid(valid));
   }, [formData]);
 
+  useEffect(() => {
+    const newFormData = { ...formData };
+    newFormData.ingredTotalCost = newFormData.count * ingredTotalCost;
+    newFormData.totalPrice =
+      newFormData.count * newPrice + newFormData.ingredTotalCost;
+    setFormData(newFormData);
+  }, [ingredTotalCost, formData.count]);
+
+  const [count, setCount] = useState(1);
+  const decrease = () => {
+    setCount(count - 1);
+  };
+  const increase = () => {
+    setCount(count + 1);
+  };
+
   const changeHandler = (event) => {
-    let name = event.target.name;
+    let { name } = event.target;
     let value =
       event.target.type === "checkbox"
         ? event.target.checked
@@ -140,56 +109,74 @@ const SiparisFormu = (props) => {
 
     let newFormData = {
       ...formData,
-      [name]: value,
     };
-
     if (event.target.type === "checkbox") {
-      newFormData = {
-        ...formData,
-        extraIngredients: { ...formData.extraIngredients, [name]: value },
-      };
+      if (value) {
+        newFormData.extraIngredients.push(name);
+        setIngredTotalCost((e) => e + pizza[0].extraIngredientsPrice);
+      } else {
+        const ind = newFormData.extraIngredients.indexOf(name);
+        newFormData.extraIngredients.splice(ind, 1);
+        setIngredTotalCost((e) => e - pizza[0].extraIngredientsPrice);
+      }
+      yup
+        .reach(formSchema, "extraIngredients")
+        .validate(newFormData.extraIngredients)
+        .then(() => {
+          const newErrors = { ...errors, extraIngredients: "" };
+          setErrors(newErrors);
+        })
+        .catch((error) => {
+          const newErrors = { ...errors, extraIngredients: error.errors[0] };
+          setErrors(newErrors);
+        });
     } else {
-      newFormData = {
-        ...formData,
-        [name]: value,
-      };
+      newFormData[name] = value;
+
+      if ("size" === name || "thickness" === name) {
+        yup
+          .reach(formSchema, name)
+          .validate(value)
+          .then(() => {
+            const newErrors = { ...errors, [name]: "" };
+            setErrors(newErrors);
+          })
+          .catch((error) => {
+            const newErrors = { ...errors, [name]: error.errors[0] };
+            setErrors(newErrors);
+          });
+      }
     }
 
     console.log(newFormData);
 
     setFormData(newFormData);
-
-    /*  yup
-      .reach(formSchema, name)
-      .validate(value)
-      .then(() => {
-        const newErrors = { ...errors, [name]: "" };
-        setErrors(newErrors);
-      })
-      .catch((error) => {
-        const newErrors = { ...errors, [name]: error.errors[0] };
-        setErrors(newErrors);
-      }); */
   };
 
+  const orderData = {
+    pizzaName: "Position Absolute Acı Pizza",
+    size: formData.size,
+    thickness: formData.thickness,
+    extraIngredients: formData.extraIngredients,
+    secimler: count * ingredTotalCost,
+    totalPrice: count * (ingredTotalCost + newPrice(price)),
+  };
   const submitHandler = (event) => {
     event.preventDefault();
-    /*  axios
+
+    axios
       .post("https://reqres.in/api/users", formData)
       .then((res) => {
-        props.addNewUser(res.data);
+        setFormData({
+          ...formData,
+          id: res.data.id,
+          createdAt: res.data.createdAt,
+        });
       })
-      // props.users
       .catch((error) => {
         console.log(error.response.message);
-      }); */
-    const orderData = {
-      pizzaName: "Position Absolute Acı Pizza",
-      size: formData.size,
-      thickness: formData.thickness,
-      extraIngredients: formData.extraIngredients,
-      totalPrice: count * (numberOfIngredients * 5 + newPrice(price)),
-    };
+      });
+
     history.push("/siparisalindi", orderData);
     setFormData(initialForm);
   };
@@ -209,6 +196,7 @@ const SiparisFormu = (props) => {
                 value="Küçük"
                 ckecked={formData.size === "Küçük"}
                 onChange={changeHandler}
+                data-testid="input"
               />
               <label htmlFor="küçük">Küçük</label>
             </div>
@@ -220,6 +208,7 @@ const SiparisFormu = (props) => {
                 value="Orta"
                 checked={formData.size === "Orta"}
                 onChange={changeHandler}
+                data-testid="input"
               />
               <label htmlFor="orta">Orta</label>
             </div>
@@ -231,10 +220,12 @@ const SiparisFormu = (props) => {
                 value="Büyük"
                 checked={formData.size === "Büyük"}
                 onChange={changeHandler}
+                data-testid="input"
               />
               <label htmlFor="büyük">Büyük</label>
             </div>
           </div>
+          {errors.size && <p className="error">{errors.size}</p>}
         </div>
         <div className="thickness">
           <p className="titles">Hamur Seç</p>
@@ -253,6 +244,7 @@ const SiparisFormu = (props) => {
               </option>
             </select>
           </div>
+          {errors.thickness && <p className="error">{errors.thickness}</p>}
         </div>
       </div>
 
@@ -262,19 +254,24 @@ const SiparisFormu = (props) => {
           En fazla 10 malzeme seçebilirsiniz.5₺
         </p>
         <div className="extra-ingredients">
-          {Object.keys(formData.extraIngredients).map((item, index) => (
+          {pizza[0].extraIngredients.map((item, index) => (
             <div className="checkbox-input-label">
               <input
                 id={item}
                 name={item}
+                key={index}
                 type="checkbox"
-                checked={formData.extraIngredients.item}
+                checked={formData.extraIngredients.includes(item)}
                 onChange={changeHandler}
+                data-testid="input"
               ></input>
               <label htmlFor={item}>{item}</label>
             </div>
           ))}
         </div>
+        {errors.extraIngredients && (
+          <p className="error">{errors.extraIngredients}</p>
+        )}
       </div>
 
       <div className="order-note-container">
@@ -298,6 +295,7 @@ const SiparisFormu = (props) => {
               type="button"
               onClick={decrease}
               disabled={count <= 1 ? true : false}
+              data-testid="counter"
             >
               -
             </Button>
@@ -318,6 +316,7 @@ const SiparisFormu = (props) => {
               type="button"
               onClick={increase}
               disabled={count >= 10 ? true : false}
+              data-testid="counter"
             >
               +
             </Button>
@@ -328,18 +327,18 @@ const SiparisFormu = (props) => {
             <div className="siparis-toplami">Sipariş Toplamı</div>
             <div className="secimler">
               Seçimler:
-              {numberOfIngredients * 5}₺
+              {orderData.secimler}₺
             </div>
             <div className="toplam">
               Toplam:
-              {count * (numberOfIngredients * 5 + newPrice(price))}₺
+              {orderData.totalPrice}₺
             </div>
           </div>
           <div className="order-button">
             <Button
               id="order-button"
               color="warning"
-              disabled={isDisabled}
+              disabled={!isValid}
               type="submit"
             >
               SİPARİŞ VER
