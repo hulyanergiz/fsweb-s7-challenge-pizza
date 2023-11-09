@@ -11,27 +11,34 @@ const SiparisAlindi = () => {
       <h1 className="title">Teknolojik Yemekler</h1>
       <h2 className="subtitle">lezzetin yolda</h2>
       <h2 className="siparis-title">SİPARİŞ ALINDI</h2>
-
+      <h3 className="pizza-name">{orderData.pizzaName}</h3>
       <div className="order-details">
-        <h3>{orderData.pizzaName}</h3>
-        <p>Boyut: {orderData.size}</p>
-        <p>Hamur: {orderData.thickness}</p>
+        <hr />
+        <p>
+          Boyut: <span className="order-data">{orderData.size}</span>{" "}
+        </p>
+        <p>
+          Hamur: <span className="order-data">{orderData.thickness}</span>
+        </p>
         <p>
           Ek Malzemeler:{" "}
-          {orderData.extraIngredients
-            .filter((ingredient) => ingredient)
-            .join(", ")}
+          <span className="order-data">
+            {orderData.extraIngredients
+              .filter((ingredient) => ingredient)
+              .join(", ")}
+          </span>
         </p>{" "}
       </div>
 
       <div className="order-summary">
         <h4>Sipariş Toplamı</h4>
-        <p>
-          Seçimler:{" "}
-          {/* {Object.values(orderData.extraIngredients).filter(Boolean).length * 5} */}
-          {orderData.secimler}₺
-        </p>
-        <p>Toplam: {orderData.totalPrice}₺</p>
+        <div className="siparis-cost">
+          <p>Seçimler: </p>
+          <span>{orderData.secimler}₺</span>
+        </div>
+        <div className="siparis-cost">
+          <p>Toplam:</p> <span>{orderData.totalPrice}₺</span>
+        </div>
       </div>
     </div>
   );
