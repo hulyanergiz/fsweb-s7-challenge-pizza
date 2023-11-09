@@ -14,6 +14,7 @@ import foodFirst from "../Assets/adv-aseets/food-1.png";
 import foodSecond from "../Assets/adv-aseets/food-2.png";
 import foodThird from "../Assets/adv-aseets/food-3.png";
 import "./AnaSayfa.css";
+import Footer from "../layouts/Footer";
 const AnaSayfa = () => {
   return (
     <>
@@ -54,6 +55,7 @@ const AnaSayfa = () => {
           </div>
           <NavLink href="/pizza">
             <button
+              role="button"
               style={{
                 padding: "20px 50px",
                 fontSize: "2rem",
@@ -103,14 +105,15 @@ const AnaSayfa = () => {
                 className="big-card"
                 style={{ backgroundImage: `url(${bigCard})` }}
               >
-                {/* <img clasName="big-img" src={bigCard} alt="lezzetus" /> */}
                 <div>
                   <p className="big-paragraph">
                     Özel <br />
                     Lezzetus
                   </p>
                   <p className="small-paragraph">Position:Absolute Acı Pizza</p>
-                  <button className="order-button">SİPARİŞ VER</button>
+                  <button role="button" className="order-button">
+                    SİPARİŞ VER
+                  </button>
                 </div>
               </div>
               <div className="small-cards">
@@ -122,7 +125,9 @@ const AnaSayfa = () => {
                     Hackathlon <br />
                     Burger Menü
                   </p>
-                  <button className="order-button">SİPARİŞ VER</button>
+                  <button role="button" className="order-button">
+                    SİPARİŞ VER
+                  </button>
                 </div>
                 <div
                   className="small-card"
@@ -133,7 +138,9 @@ const AnaSayfa = () => {
                     <br />
                     npm gibi kurye
                   </p>
-                  <button className="order-button">SİPARİŞ VER</button>
+                  <button role="button" className="order-button">
+                    SİPARİŞ VER
+                  </button>
                 </div>
               </div>
             </div>
@@ -205,6 +212,7 @@ const AnaSayfa = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
