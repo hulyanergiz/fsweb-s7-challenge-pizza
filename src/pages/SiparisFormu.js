@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import * as yup from "yup";
 import "./SiparisFormu.css";
-import { Button } from "reactstrap";
 import { useHistory } from "react-router-dom";
 
 const SiparisFormu = (props) => {
@@ -11,23 +10,23 @@ const SiparisFormu = (props) => {
 
   const pizza = [
     {
-      size: ["Küçük", "Orta", "Büyük"],
-      thickness: ["Hamur Kalınlığı", "İnce", "Normal", "Kalın"],
+      size: ["S", "M", "L"],
+      thickness: ["--Hamur Kalınlığı Seç--", "İnce", "Normal", "Kalın"],
       extraIngredients: [
         "Pepperoni",
         "Domates",
         "Biber",
         "Sosis",
-        "Misir",
+        "Mısır",
         "Sucuk",
         "Kanada Jambonu",
         "Kekik",
         "Ananas",
         "Tavuk Izgara",
-        "Jalepano",
+        "Jalepeno",
         "Kabak",
         "Sogan",
-        "Sarimsak",
+        "Sarımsak",
       ],
       extraIngredientsPrice: 5,
     },
@@ -48,6 +47,29 @@ const SiparisFormu = (props) => {
     thickness: "",
     extraIngredients: "",
   };
+  const newPrice = (price) => {
+    if (
+      formData.size !== "S" &&
+      formData.size !== "M" &&
+      formData.size !== "L"
+    ) {
+      return (price -= price);
+    } else if (formData.size === "S") {
+      return price;
+    } else if (formData.size === "M") {
+      return (price += 10);
+    } else if (formData.size === "L") {
+      return (price += 20);
+    }
+  };
+
+  const [count, setCount] = useState(1);
+  const decrease = () => {
+    setCount(count - 1);
+  };
+  const increase = () => {
+    setCount(count + 1);
+  };
 
   const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState(initialError);
@@ -55,29 +77,17 @@ const SiparisFormu = (props) => {
   const history = useHistory();
   const [ingredTotalCost, setIngredTotalCost] = useState(0);
 
-  const newPrice = (price) => {
-    if (
-      formData.size !== "Küçük" &&
-      formData.size !== "Orta" &&
-      formData.size !== "Büyük"
-    ) {
-      return (price -= price);
-    } else if (formData.size === "Küçük") {
-      return price;
-    } else if (formData.size === "Orta") {
-      return (price += 10);
-    } else if (formData.size === "Büyük") {
-      return (price += 20);
-    }
-  };
   const formSchema = yup.object().shape({
     size: yup.string().oneOf(pizza[0].size, "Bir boyut seçmelisiniz."),
     thickness: yup
       .string()
-      .notOneOf([pizza[0].thickness[0]], "Bir hamur kalınlığı seçmelisiniz"),
+      .notOneOf([pizza[0].thickness[0]], "Bir hamur kalınlığı seçmelisiniz."),
     extraIngredients: yup
       .array()
-      .max(10, "En fazla 10 ek malzeme seçebilirsiniz."),
+      .max(
+        10,
+        "En fazla 10 ek malzeme seçebilirsiniz. En az 1 malzeme çıkarınız."
+      ),
   });
 
   useEffect(() => {
@@ -92,28 +102,22 @@ const SiparisFormu = (props) => {
     setFormData(newFormData);
   }, [ingredTotalCost, formData.count]);
 
-  const [count, setCount] = useState(1);
-  const decrease = () => {
-    setCount(count - 1);
-  };
-  const increase = () => {
-    setCount(count + 1);
-  };
-
   const changeHandler = (event) => {
-    let { name } = event.target;
-    let value =
-      event.target.type === "checkbox"
-        ? event.target.checked
-        : event.target.value;
+    let { name, type, checked, value } = event.target;
+    let val = type === "checkbox" ? checked : value;
 
     let newFormData = {
       ...formData,
     };
-    if (event.target.type === "checkbox") {
-      if (value) {
-        newFormData.extraIngredients.push(name);
-        setIngredTotalCost((e) => e + pizza[0].extraIngredientsPrice);
+
+    if (type === "checkbox") {
+      if (val) {
+        if (newFormData.extraIngredients.length <= 10) {
+          newFormData.extraIngredients.push(name);
+          setIngredTotalCost((e) => e + pizza[0].extraIngredientsPrice);
+        } else {
+          return;
+        }
       } else {
         const ind = newFormData.extraIngredients.indexOf(name);
         newFormData.extraIngredients.splice(ind, 1);
@@ -131,12 +135,12 @@ const SiparisFormu = (props) => {
           setErrors(newErrors);
         });
     } else {
-      newFormData[name] = value;
+      newFormData[name] = val;
 
-      if ("size" === name || "thickness" === name) {
+      if ("size" === name && "thickness" === name) {
         yup
           .reach(formSchema, name)
-          .validate(value)
+          .validate(val)
           .then(() => {
             const newErrors = { ...errors, [name]: "" };
             setErrors(newErrors);
@@ -158,9 +162,11 @@ const SiparisFormu = (props) => {
     size: formData.size,
     thickness: formData.thickness,
     extraIngredients: formData.extraIngredients,
+    note: formData.note,
     secimler: count * ingredTotalCost,
     totalPrice: count * (ingredTotalCost + newPrice(price)),
   };
+
   const submitHandler = (event) => {
     event.preventDefault();
 
@@ -176,7 +182,6 @@ const SiparisFormu = (props) => {
       .catch((error) => {
         console.log(error.response.message);
       });
-
     history.push("/siparisalindi", orderData);
     setFormData(initialForm);
   };
@@ -190,39 +195,48 @@ const SiparisFormu = (props) => {
           <div className="size-options">
             <div className="size-option">
               <input
+                className="size-input"
                 id="küçük"
                 name="size"
                 type="radio"
-                value="Küçük"
-                ckecked={formData.size === "Küçük"}
+                value="S"
+                ckecked={formData.size === "S"}
                 onChange={changeHandler}
                 data-testid="input"
               />
-              <label htmlFor="küçük">Küçük</label>
+              <label className="size-label" htmlFor="küçük">
+                S
+              </label>
             </div>
             <div className="size-option">
               <input
+                className="size-input"
                 id="orta"
                 name="size"
                 type="radio"
-                value="Orta"
-                checked={formData.size === "Orta"}
+                value="M"
+                checked={formData.size === "M"}
                 onChange={changeHandler}
                 data-testid="input"
               />
-              <label htmlFor="orta">Orta</label>
+              <label className="size-label" htmlFor="orta">
+                M
+              </label>
             </div>
             <div className="size-option">
               <input
+                className="size-input"
                 id="büyük"
                 name="size"
                 type="radio"
-                value="Büyük"
-                checked={formData.size === "Büyük"}
+                value="L"
+                checked={formData.size === "L"}
                 onChange={changeHandler}
                 data-testid="input"
               />
-              <label htmlFor="büyük">Büyük</label>
+              <label className="size-label" htmlFor="büyük">
+                L
+              </label>
             </div>
           </div>
           {errors.size && <p className="error">{errors.size}</p>}
@@ -232,7 +246,7 @@ const SiparisFormu = (props) => {
           <span>*</span>
           <div className="thickness-options" onChange={changeHandler}>
             <select onChange={changeHandler} name="thickness" id="thickness">
-              <option value="">Hamur kalınlığı</option>
+              <option value="">--Hamur Kalınlığı Seç--</option>
               <option selected={formData.thickness === "İnce"} value="İnce">
                 İnce
               </option>
@@ -283,14 +297,13 @@ const SiparisFormu = (props) => {
           onChange={changeHandler}
         ></textarea>
       </div>
-
+      <hr />
       <div className="counter-total">
         <div className="counter">
           <div className="counter-decrease">
-            <Button
+            <button
+              className="counter-decrease-button"
               onChange={changeHandler}
-              color="warning"
-              size="lg"
               name="quantity-button"
               type="button"
               onClick={decrease}
@@ -298,20 +311,15 @@ const SiparisFormu = (props) => {
               data-testid="counter"
             >
               -
-            </Button>
+            </button>
           </div>
-          <div
-            className="counter-count"
-            name="quantity"
-            value={formData.quantity}
-          >
+          <div className="counter-count" name="quantity" value={formData.count}>
             {count}
           </div>
           <div className="counter-increase">
-            <Button
+            <button
+              className="counter-increase-button"
               onChange={changeHandler}
-              color="warning"
-              size="lg"
               name="quantity-button"
               type="button"
               onClick={increase}
@@ -319,7 +327,7 @@ const SiparisFormu = (props) => {
               data-testid="counter"
             >
               +
-            </Button>
+            </button>
           </div>
         </div>
         <div className="total-button">
@@ -327,22 +335,22 @@ const SiparisFormu = (props) => {
             <div className="siparis-toplami">Sipariş Toplamı</div>
             <div className="secimler">
               Seçimler:
-              {orderData.secimler}₺
+              <span>{orderData.secimler}₺</span>
             </div>
             <div className="toplam">
               Toplam:
-              {orderData.totalPrice}₺
+              <span>{orderData.totalPrice}₺</span>
             </div>
           </div>
           <div className="order-button">
-            <Button
+            <button
+              className="submit-button"
               id="order-button"
-              color="warning"
               disabled={!isValid}
               type="submit"
             >
               SİPARİŞ VER
-            </Button>
+            </button>
           </div>
         </div>
       </div>
