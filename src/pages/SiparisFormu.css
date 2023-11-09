@@ -7,11 +7,40 @@
   width: 50%;
   justify-content: flex-start;
 }
+.size-options {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
 .size-option {
   margin-bottom: 25px;
 }
-.size-option input {
+
+.size-input {
   margin-right: 10px;
+  display: none;
+}
+.size-label {
+  background-color: #faf7f2;
+  border: none;
+  border-radius: 50%;
+  padding: 16px 23px;
+  cursor: pointer;
+}
+.size-input:checked + .size-label {
+  background-color: #fdc913;
+  font-weight: 900;
+  color: white;
+}
+.thickness-options select,
+.thickness-options select option {
+  height: 55px;
+  width: 283px;
+  background-color: #faf7f2;
+  color: #5f5f5f;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
 }
 .titles {
   color: #292929;
@@ -45,11 +74,30 @@ label {
 }
 .checkbox-input-label {
   width: 30%;
+  display: flex;
   justify-content: flex-start;
+  align-items: center;
   margin-bottom: 25px;
 }
 .checkbox-input-label input {
   margin-right: 10px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  background-color: #faf7f2;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.checkbox-input-label input:checked {
+  background-color: #fdc913;
+  background-image: url("../Assets/checkmark-icon.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.checkbox-input-label label {
+  font-weight: 700;
 }
 .order-note-container {
   margin-top: 25px;
@@ -60,9 +108,13 @@ label {
 textarea {
   display: block;
   width: 100%;
+  border: none;
+  border-radius: 10px;
+  background-color: #faf7f2;
 }
+
 .counter-total {
-  margin-top: 1rem;
+  margin-top: 2rem;
   display: flex;
   flex-direction: row;
   column-gap: 56px;
@@ -73,13 +125,30 @@ textarea {
   justify-content: flex-start;
   align-items: flex-start;
   height: 30%;
-  border: 1px solid lightgray;
-  border-radius: 10px;
+}
+.counter-decrease-button {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 10px 0 0 10px;
+  background-color: #faf7f2;
+}
+.counter-increase-button {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 0 10px 10px 0;
+  background-color: #faf7f2;
 }
 .counter-count {
+  width: 50px;
+  height: 50px;
   display: flex;
   align-self: center;
   padding: 10px 20px;
+  background-color: #faf7f2;
+  border-left: 1px solid rgb(231, 229, 229);
+  border-right: 1px solid rgb(231, 229, 229);
 }
 .total-button {
   display: flex;
@@ -87,8 +156,9 @@ textarea {
   justify-content: flex-end;
 }
 .order-total {
+  margin-top: 0.2rem;
   padding-top: 1rem;
-  padding-left: 10px;
+  padding-left: 50px;
   width: 386px;
   height: 187px;
   display: flex;
@@ -96,27 +166,39 @@ textarea {
   gap: 1rem;
   justify-content: center;
   align-items: stretch;
-  border: 0.5px solid lightgray;
+  background-color: #faf7f2;
   border-radius: 0.2rem;
 }
 .siparis-toplami {
   font-weight: bolder;
 }
+.secimler,
+.toplam {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-right: 50px;
+}
+.secimler span,
+.toplam span {
+  text-align: end;
+}
 .toplam {
   color: #ce2829;
 }
-.order-button button {
+.submit-button {
   text-align: center;
-  width: 100%;
+  width: 386px;
   height: 62px;
   background-color: #fdc913;
   border: none;
   font-weight: 600;
   color: white;
+  margin-left: -65px;
+  margin-top: -25px;
 }
-.order-button button:hover {
-  background-color: lightyellow;
-  color: #5f5f5f;
+.submit-button:disabled {
+  background-color: #c1bebe;
 }
 
 .error {
