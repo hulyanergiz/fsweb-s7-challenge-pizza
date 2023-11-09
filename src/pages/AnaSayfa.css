@@ -51,17 +51,11 @@ h2 {
   margin: 120px auto 0 auto;
 }
 .big-card {
-  /* background-image: url("../Assets/adv-aseets/kart-1.png");
-  background-size: cover;
-  background-position: center; */
   width: 636px;
   height: 536px;
   border: none;
   border-radius: 15px;
 }
-/* .big-img {
-  position: relative;
-} */
 .big-paragraph {
   font-family: Quattrocento;
   font-size: 70px;
@@ -69,8 +63,7 @@ h2 {
   font-weight: 700;
   line-height: 70px;
   padding: 40px 40px 0 40px;
-  /* position: absolute; */
-} /*pizza hover ekle*/
+}
 .small-paragraph {
   color: white;
   font-family: Barlow;
