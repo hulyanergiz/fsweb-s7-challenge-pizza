@@ -42,6 +42,17 @@
   letter-spacing: 1.5px;
 }
 
+.customer-name {
+  font-family: "Barlow";
+  font-size: 20px;
+  font-weight: 500px;
+}
+.customer-name-span,
+.order-note {
+  color: white;
+  font-weight: 900;
+}
+
 .pizza-name {
   font-family: "Barlow";
   font-weight: 600;
@@ -68,10 +79,6 @@
   flex-direction: row;
   justify-content: space-between;
 }
-.siparis-cost span {
-  color: white;
-  font-weight: 900;
-}
 
 .order-details h3,
 .order-summary h4 {
@@ -84,6 +91,10 @@
 .order-summary p {
   margin: 5px 0;
   color: white;
+}
+.order-summary span {
+  color: white;
+  font-weight: 900;
 }
 
 .order-data {
