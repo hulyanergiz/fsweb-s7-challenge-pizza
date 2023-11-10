@@ -56,6 +56,7 @@ const AnaSayfa = () => {
           <NavLink href="/pizza">
             <button
               role="button"
+              id="order-pizza"
               style={{
                 padding: "20px 50px",
                 fontSize: "2rem",
