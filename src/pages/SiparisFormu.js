@@ -194,7 +194,7 @@ const SiparisFormu = (props) => {
   };
 
   return (
-    <form id="pizza-form" onSubmit={submitHandler}>
+    <form id="pizza-form" onSubmit={submitHandler} data-testid="form">
       <div className="name-input-div">
         <label className="name-label">
           Müşteri adı: <span>*</span>{" "}
@@ -203,11 +203,16 @@ const SiparisFormu = (props) => {
             id="name-input"
             name="customerName"
             value={formData.customerName}
-            placeholder="Ad giriniz..."
+            placeholder="Ad giriniz"
             onChange={changeHandler}
+            data-testid="name"
           ></textarea>
         </label>
-        {errors.customerName && <p className="error">{errors.customerName}</p>}
+        {errors.customerName && (
+          <p data-testid="error" className="error">
+            {errors.customerName}
+          </p>
+        )}
       </div>
       <div className="size-thickness-options">
         <div className="size">
@@ -279,7 +284,11 @@ const SiparisFormu = (props) => {
               </option>
             </select>
           </div>
-          {errors.thickness && <p className="error">{errors.thickness}</p>}
+          {errors.thickness && (
+            <p data-testid="error" className="error">
+              {errors.thickness}
+            </p>
+          )}
         </div>
       </div>
 
@@ -299,6 +308,7 @@ const SiparisFormu = (props) => {
                 checked={formData.extraIngredients.includes(item)}
                 onChange={changeHandler}
                 data-testid="input"
+                role="input"
               ></input>
               <label htmlFor={item}>{item}</label>
             </div>
