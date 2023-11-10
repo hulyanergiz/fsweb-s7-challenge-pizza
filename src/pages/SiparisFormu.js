@@ -33,6 +33,7 @@ const SiparisFormu = (props) => {
   ];
 
   const initialForm = {
+    customerName: "",
     size: [],
     thickness: [],
     extraIngredients: [],
@@ -43,6 +44,7 @@ const SiparisFormu = (props) => {
   };
 
   const initialError = {
+    customerName: "",
     size: "",
     thickness: "",
     extraIngredients: "",
@@ -78,6 +80,10 @@ const SiparisFormu = (props) => {
   const [ingredTotalCost, setIngredTotalCost] = useState(0);
 
   const formSchema = yup.object().shape({
+    customerName: yup
+      .string()
+      .min(2, "En az iki karakter girmelisiniz.")
+      .required("Ad alanı boş bırakılamaz."),
     size: yup.string().oneOf(pizza[0].size, "Bir boyut seçmelisiniz."),
     thickness: yup
       .string()
@@ -137,7 +143,7 @@ const SiparisFormu = (props) => {
     } else {
       newFormData[name] = val;
 
-      if ("size" === name && "thickness" === name) {
+      if ("customerName" === name || "size" === name || "thickness" === name) {
         yup
           .reach(formSchema, name)
           .validate(val)
@@ -158,6 +164,7 @@ const SiparisFormu = (props) => {
   };
 
   const orderData = {
+    customerName: formData.customerName,
     pizzaName: "Position Absolute Acı Pizza",
     size: formData.size,
     thickness: formData.thickness,
@@ -188,11 +195,25 @@ const SiparisFormu = (props) => {
 
   return (
     <form id="pizza-form" onSubmit={submitHandler}>
+      <div className="name-input-div">
+        <label className="name-label">
+          Müşteri adı: <span>*</span>{" "}
+          <textarea
+            className="name-input-textarea"
+            id="name-input"
+            name="customerName"
+            value={formData.customerName}
+            placeholder="Ad giriniz..."
+            onChange={changeHandler}
+          ></textarea>
+        </label>
+        {errors.customerName && <p className="error">{errors.customerName}</p>}
+      </div>
       <div className="size-thickness-options">
         <div className="size">
           <p className="titles">Boyut Seç</p>
           <span>*</span>
-          <div className="size-options">
+          <div id="size-radio" className="size-options">
             <div className="size-option">
               <input
                 className="size-input"
@@ -267,7 +288,7 @@ const SiparisFormu = (props) => {
         <p className="extra-ingredients-details">
           En fazla 10 malzeme seçebilirsiniz.5₺
         </p>
-        <div className="extra-ingredients">
+        <div id="malzemeler-checkbox" className="extra-ingredients">
           {pizza[0].extraIngredients.map((item, index) => (
             <div className="checkbox-input-label">
               <input
@@ -291,9 +312,10 @@ const SiparisFormu = (props) => {
       <div className="order-note-container">
         <p className="titles">Sipariş Notu</p>
         <textarea
-          id="orderNote"
-          name="orderNote"
+          id="special-text"
+          name="note"
           placeholder="Siparişine eklemek istediğin bir not var mı ?"
+          value={formData.note}
           onChange={changeHandler}
         ></textarea>
       </div>
