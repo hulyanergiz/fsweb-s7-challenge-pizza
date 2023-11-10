@@ -11,6 +11,10 @@ const SiparisAlindi = () => {
       <h1 className="title">Teknolojik Yemekler</h1>
       <h2 className="subtitle">lezzetin yolda</h2>
       <h2 className="siparis-title">SİPARİŞ ALINDI</h2>
+      <h3 className="customer-name">
+        Müşteri adı:
+        <span className="customer-name-span">{orderData.customerName}</span>
+      </h3>
       <h3 className="pizza-name">{orderData.pizzaName}</h3>
       <div className="order-details">
         <hr />
@@ -28,6 +32,10 @@ const SiparisAlindi = () => {
               .join(", ")}
           </span>
         </p>{" "}
+        <p>
+          {" "}
+          Sipariş Notu: <span className="order-note">{orderData.note}</span>
+        </p>
       </div>
 
       <div className="order-summary">
