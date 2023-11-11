@@ -24,7 +24,8 @@ const AnaSayfa = () => {
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            width: "1920px",
+            maxWidth: "1920px",
+            width: "100%",
             height: "1080px",
             display: "flex",
             flexDirection: "column",
@@ -38,6 +39,7 @@ const AnaSayfa = () => {
               position: "absolute",
               top: "3%",
               textAlign: "center",
+              margin: "auto",
             }}
           >
             <h1
