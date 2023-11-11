@@ -1,21 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow");
 
+/* :root {
+  --width: 100%;
+} */
 .header-div {
   background-color: #c20608;
-  width: 1920px;
+  max-width: 1920px;
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
   height: 100px;
 }
+
 .logo {
   padding-top: 25px;
-  margin-left: 780px;
+  margin: auto;
 }
-.banner {
-  margin-left: 650px;
-}
+
 .heading-path {
-  width: 1920px;
+  max-width: 1920px;
+  width: 100%;
   background-color: #faf7f2;
   padding-bottom: 10px;
+}
+.banner-div {
+  max-width: 1920px;
+  width: 100%;
+
+  background-color: #faf7f2;
+}
+.banner-container {
+  border: 1px solid green;
+  width: 600px;
+  height: 300px;
+  margin: auto;
 }
 
 .heading-p {
@@ -34,17 +52,21 @@ strong {
 }
 .main-bg {
   background-color: #faf7f2;
-  width: 1920px;
+  max-width: 1920px;
+  width: 100%;
 }
 .main-detail,
 .main-container-lower {
   font-family: "Barlow";
   width: 581px;
-  margin-left: 695px;
+  margin: auto;
+  /* width: 20vw;
+  margin-left: 23vw; */
 }
 .main-detail {
   padding-bottom: 15px;
 }
+
 .main-container-lower {
   padding-top: 25px;
 }

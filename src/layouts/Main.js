@@ -19,8 +19,12 @@ function Main(props) {
         <div className="header-div">
           <img className="logo" src={logo} alt="logo" />
         </div>
+        <div className="banner-div">
+          <div className="banner-container">
+            <img className="banner" src={banner} alt="pizza" />
+          </div>
+        </div>
         <div className="heading-path">
-          <img className="banner" src={banner} alt="pizza" />
           <p className="heading-p">
             <a className="homePage" href="/">
               Anasayfa
